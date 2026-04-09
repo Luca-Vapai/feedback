@@ -1,0 +1,8 @@
+# Never commit OAuth credentials or tokens
+credentials/client_secret.json
+credentials/token.json
+credentials/*.json
+
+# Python
+__pycache__/
+*.pyc

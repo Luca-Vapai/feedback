@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading… · SideOutSticks Reviews</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-project">
+  <header class="site-header">
+    <div class="brand">
+      <a href="index.html" class="brand-link">
+        <img src="Logos/Logo blanco.png" alt="SideOutSticks" class="brand-logo">
+      </a>
+      <span class="brand-tagline" id="project-name-header">Loading…</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <a href="index.html" class="back-link">← Back to projects</a>
+
+    <h1 id="project-name">Loading…</h1>
+    <p class="subtitle">Select a piece to review. Each piece may have multiple versions; pick the latest one unless otherwise instructed.</p>
+
+    <div id="pieces-list" class="pieces-list">
+      <p class="loading">Loading pieces…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>SideOutSticks · AI-powered content generation</p>
+  </footer>
+
+  <script src="assets/js/config-loader.js"></script>
+  <script>
+    async function renderProject() {
+      const params = new URLSearchParams(window.location.search);
+      const projectId = params.get('id');
+
+      if (!projectId) {
+        document.getElementById('pieces-list').innerHTML = '<p class="empty">No project specified.</p>';
+        return;
+      }
+
+      try {
+        const config = await loadProjectConfig(projectId);
+        document.title = `${config.name} · SideOutSticks Reviews`;
+        document.getElementById('project-name').textContent = config.name;
+        document.getElementById('project-name-header').textContent = config.name;
+
+        const piecesContainer = document.getElementById('pieces-list');
+        const cards = config.pieces.map(piece => {
+          const versions = piece.versions
+            .slice()
+            .sort((a, b) => b.version - a.version);
+          const versionLinks = versions.map(v => {
+            const isLatest = v === versions[0];
+            return `
+              <a class="version-link${isLatest ? ' latest' : ''}"
+                 href="piece.html?project=${config.id}&piece=${piece.id}&v=${v.version}">
+                v${v.version}${isLatest ? ' (latest)' : ''} · ${v.export_date}
+              </a>
+            `;
+          }).join('');
+
+          return `
+            <div class="piece-card">
+              <h2>${piece.name}</h2>
+              <div class="version-links">${versionLinks}</div>
+            </div>
+          `;
+        }).join('');
+
+        piecesContainer.innerHTML = cards;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('pieces-list').innerHTML =
+          `<p class="empty">Failed to load project: ${err.message}</p>`;
+      }
+    }
+
+    renderProject();
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SideOutSticks · Project Reviews</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-index">
+  <header class="site-header">
+    <div class="brand">
+      <img src="Logos/Logo blanco.png" alt="SideOutSticks" class="brand-logo">
+      <span class="brand-tagline">Project Reviews</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Available projects</h1>
+    <p class="subtitle">Select a project to view its pieces and leave feedback.</p>
+
+    <div id="project-list" class="project-list">
+      <p class="loading">Loading projects…</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>SideOutSticks · AI-powered content generation</p>
+  </footer>
+
+  <script>
+    // Hardcoded project list. To add a project, append its id here and create projects/[id]/config.json
+    const PROJECTS = ['cend'];
+
+    async function loadProjects() {
+      const container = document.getElementById('project-list');
+      const cards = [];
+
+      for (const projectId of PROJECTS) {
+        try {
+          const res = await fetch(`projects/${projectId}/config.json`);
+          if (!res.ok) throw new Error('Config not found');
+          const config = await res.json();
+          cards.push(`
+            <a class="project-card" href="project.html?id=${config.id}">
+              <h2>${config.name}</h2>
+              <p class="project-card-meta">${config.pieces.length} piece${config.pieces.length === 1 ? '' : 's'} · Click to review</p>
+            </a>
+          `);
+        } catch (err) {
+          console.error(`Failed to load project ${projectId}:`, err);
+        }
+      }
+
+      container.innerHTML = cards.length
+        ? cards.join('')
+        : '<p class="empty">No projects available.</p>';
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading… · SideOutSticks Reviews</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="page-piece">
+  <header class="site-header">
+    <div class="brand">
+      <a href="index.html" class="brand-link">
+        <img src="Logos/Logo blanco.png" alt="SideOutSticks" class="brand-logo">
+      </a>
+      <span class="brand-tagline" id="piece-name-header">Loading…</span>
+    </div>
+  </header>
+
+  <main class="piece-layout">
+    <!-- Left: Player + How-to -->
+    <section class="player-column">
+      <div class="piece-header">
+        <a href="#" id="back-link" class="back-link">← Back to project</a>
+        <h1 id="piece-title">Loading…</h1>
+        <p class="piece-meta" id="piece-meta"></p>
+      </div>
+
+      <div id="player-wrapper" class="player-wrapper">
+        <div id="player"></div>
+      </div>
+
+      <div class="player-controls">
+        <button id="btn-add-point" class="btn btn-primary" disabled>
+          + Add comment at current time
+        </button>
+        <button id="btn-mark-start" class="btn btn-secondary" disabled>
+          ⟨ Mark range start
+        </button>
+        <button id="btn-mark-end" class="btn btn-secondary" disabled>
+          Mark range end ⟩
+        </button>
+        <button id="btn-add-general" class="btn btn-secondary">
+          General comment
+        </button>
+      </div>
+
+      <div id="range-status" class="range-status" hidden></div>
+
+      <details class="how-to">
+        <summary>How to leave feedback</summary>
+        <ol>
+          <li>Enter your name in the field on the right (required to submit).</li>
+          <li>Watch the video. When something needs feedback, pause it.</li>
+          <li>Click <strong>Add comment at current time</strong> to anchor a comment to that exact moment, or use <strong>Mark range start</strong> / <strong>Mark range end</strong> to anchor it to a range.</li>
+          <li>Choose the element (Music, Video, etc.), the action (Substitute, Improve, Modify), the priority, and write a clear description.</li>
+          <li>Use <strong>General comment</strong> for feedback that does not refer to a specific moment.</li>
+          <li>You can edit or delete any comment before sending.</li>
+          <li>When you are done, click <strong>Submit feedback</strong> at the bottom of the right panel.</li>
+        </ol>
+      </details>
+    </section>
+
+    <!-- Right: Reviewer + Comments + Submit -->
+    <aside class="comments-column">
+      <div class="reviewer-block">
+        <label for="reviewer-name">Reviewer name <span class="required">*</span></label>
+        <input type="text" id="reviewer-name" placeholder="Your full name" />
+      </div>
+
+      <div class="comments-header">
+        <h2>Your comments</h2>
+        <span class="counter" id="comments-count">0</span>
+      </div>
+
+      <div id="comments-list" class="comments-list">
+        <p class="empty-comments">No comments yet. Pause the video and click "Add comment at current time" to start.</p>
+      </div>
+
+      <button id="btn-submit" class="btn btn-submit" disabled>
+        Submit feedback
+      </button>
+
+      <div id="submit-status" class="submit-status" hidden></div>
+    </aside>
+  </main>
+
+  <!-- Comment form modal -->
+  <div id="form-modal" class="modal" hidden>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h3 id="form-title">New comment</h3>
+        <button class="modal-close" id="btn-close-form">×</button>
+      </header>
+      <div id="form-container"></div>
+    </div>
+  </div>
+
+  <!-- YouTube IFrame API loader (must be in window scope) -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- Our modules -->
+  <script src="assets/js/config-loader.js"></script>
+  <script src="assets/js/transcript.js"></script>
+  <script src="assets/js/player.js"></script>
+  <script src="assets/js/comments.js"></script>
+  <script src="assets/js/form.js"></script>
+  <script src="assets/js/submit.js"></script>
+  <script src="assets/js/piece-init.js"></script>
+</body>
+</html>

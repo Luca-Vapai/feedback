@@ -1,0 +1,12 @@
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OAuth credentials (also gitignored in scripts/.gitignore as safety net)
+scripts/credentials/client_secret.json
+scripts/credentials/token.json

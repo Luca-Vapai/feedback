@@ -1,0 +1,38 @@
+{
+  "id": "cend",
+  "name": "CEND",
+  "client": "CEND",
+  "branding": {
+    "primary_color": "#000000"
+  },
+  "pieces": [
+    {
+      "id": "manifesto",
+      "name": "Manifesto",
+      "folder_name": "Manifiesto",
+      "versions": [
+        {
+          "version": 0,
+          "export_date": "2026-04-08 15:53",
+          "youtube_id": "PENDING_UPLOAD_TO_YOUTUBE_AND_PASTE_ID_HERE",
+          "duration_seconds": 89.56,
+          "transcript_file": "transcripts/manifesto-v0.json"
+        }
+      ]
+    },
+    {
+      "id": "commercial",
+      "name": "Commercial",
+      "folder_name": "Comercial",
+      "versions": [
+        {
+          "version": 0,
+          "export_date": "2026-04-09 15:36",
+          "youtube_id": "9JwTblLa6BQ",
+          "duration_seconds": 87.04,
+          "transcript_file": "transcripts/commercial-v0.json"
+        }
+      ]
+    }
+  ]
+}
