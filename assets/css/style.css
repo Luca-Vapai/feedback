@@ -410,6 +410,12 @@ h2 {
   z-index: 100;
   padding: 16px;
 }
+.modal[hidden] {
+  /* Explicit override — without this, `display: flex` above wins over the HTML
+     `hidden` attribute (which resolves to `display: none` via the user-agent
+     stylesheet), leaving the modal permanently visible. */
+  display: none;
+}
 .modal-content {
   background: #fff;
   border-radius: 6px;
