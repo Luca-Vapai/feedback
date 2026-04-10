@@ -17,6 +17,13 @@
           "youtube_id": "PENDING_UPLOAD_TO_YOUTUBE_AND_PASTE_ID_HERE",
           "duration_seconds": 89.56,
           "transcript_file": "transcripts/manifesto-v0.json"
+        },
+        {
+          "version": 0,
+          "export_date": "2026-04-10 09:25",
+          "youtube_id": "ntrDc5EDHOw",
+          "duration_seconds": 87.92,
+          "transcript_file": "transcripts/manifesto-v0.json"
         }
       ]
     },
