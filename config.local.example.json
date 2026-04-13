@@ -1,0 +1,11 @@
+{
+  "project_roots": {
+    "cend": "/absolute/path/to/CEND Nuevo"
+  },
+  "souts_api": {
+    "api_base": "https://vapai-plataforma-backend-4daa799bd90b.herokuapp.com/api",
+    "comfy_base": "https://comfy.vapai.studio",
+    "api_key": "sout_PASTE_YOUR_KEY_HERE",
+    "user_id": "PASTE_YOUR_USER_ID_HERE"
+  }
+}

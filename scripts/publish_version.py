@@ -45,16 +45,23 @@ CREDS_DIR = SCRIPT_DIR / 'credentials'
 TOKEN_PATH = CREDS_DIR / 'token.json'
 CLIENT_SECRET_PATH = CREDS_DIR / 'client_secret.json'
 
-# Drive mount path (Google Drive Desktop on macOS)
-DRIVE_BASE = Path.home() / 'Library' / 'CloudStorage' / \
-    'GoogleDrive-lucaraimondo@vapai.studio' / 'Unidades compartidas' / \
-    'Produccion' / 'CEND' / 'CEND Nuevo'
-
-# Local Cend project root (to find local Exports folders)
-LOCAL_CEND_ROOT = REPO_ROOT.parent               # /Users/luca/Downloads/Cend
-
 # YouTube API scope: full manage access (upload + delete)
 SCOPES = ['https://www.googleapis.com/auth/youtube']
+
+
+def project_root(project_id):
+    """Return the root folder of a project, as defined in the global config.
+
+    The global config (Feedback web/config.json) has a `project_roots` dict
+    mapping project_id → absolute path. This is the single source of truth
+    for "where does project X live on disk", so the same script works whether
+    the project is on a local drive, on Google Drive Desktop, or anywhere else.
+    """
+    cfg, _ = load_global_config()
+    roots = cfg.get('project_roots', {})
+    if project_id not in roots:
+        err(f"project_roots[{project_id!r}] not set in {REPO_ROOT / 'config.json'}")
+    return Path(roots[project_id]).expanduser()
 
 
 # --- Utilities ---------------------------------------------------------------------
@@ -69,11 +76,26 @@ def log(msg, prefix="  "):
 
 
 def load_global_config():
-    path = REPO_ROOT / 'config.json'
-    if not path.exists():
-        err(f"Global config.json not found at {path}")
-    with open(path) as f:
-        return json.load(f), path
+    """Load config.json (public) + merge config.local.json (gitignored) on top.
+
+    The public file holds what GitHub Pages needs to serve the frontend
+    (site_url, GAS endpoint, brand). The local file holds secrets and absolute
+    paths (project_roots, souts_api key). Local wins on conflict.
+    """
+    public_path = REPO_ROOT / 'config.json'
+    local_path = REPO_ROOT / 'config.local.json'
+    if not public_path.exists():
+        err(f"config.json not found at {public_path}")
+    with open(public_path) as f:
+        merged = json.load(f)
+    if local_path.exists():
+        with open(local_path) as f:
+            local = json.load(f)
+        for k, v in local.items():
+            merged[k] = v
+    # We return the public path because that's what users mostly edit; scripts
+    # that need to know the local path should import it directly.
+    return merged, public_path
 
 
 def load_project_config(project_id):
@@ -289,28 +311,22 @@ def main():
         print(f"  Mode:        DRY-RUN (no YouTube, no config write)")
     print()
 
-    # Copy to Drive. `folder_name` in the piece config overrides the default
-    # (useful when filesystem folders use a different language than the piece name,
-    # e.g. local folders in Spanish while piece name is in English).
+    # Copy to the project root (defined in global config.json under
+    # `project_roots`). The project root is the single source of truth for
+    # where the project lives — local drive, Google Drive, etc.
+    # `folder_name` in the piece config overrides the default (useful when
+    # filesystem folders use a different language than the piece name).
     folder_name = piece.get('folder_name', piece['name'])
-    drive_dir = DRIVE_BASE / 'Exports' / folder_name
-    drive_path = drive_dir / target_name
-    if not DRIVE_BASE.exists():
-        log(f"Warning: Drive mount not found at {DRIVE_BASE}. Skipping Drive copy.")
-    else:
-        log(f"→ Copying to Drive: {drive_path}")
-        if not args.dry_run:
-            drive_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src_path, drive_path)
-
-    # Copy locally with correct name
-    local_dir = LOCAL_CEND_ROOT / 'Exports' / folder_name
-    local_target = local_dir / target_name
-    if local_target.resolve() != src_path.resolve():
-        log(f"→ Copying locally: {local_target}")
-        if not args.dry_run:
-            local_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src_path, local_target)
+    proj_root = project_root(args.project)
+    target_dir = proj_root / 'Exports' / folder_name
+    target_path = target_dir / target_name
+    if not proj_root.exists():
+        err(f"Project root not found: {proj_root}\n"
+            "Update `project_roots` in Feedback web/config.json.")
+    log(f"→ Copying to project root: {target_path}")
+    if not args.dry_run:
+        target_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src_path, target_path)
 
     # YouTube upload
     new_yt_id = None

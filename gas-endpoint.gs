@@ -72,9 +72,78 @@ function doPost(e) {
   }
 }
 
-// Optional: respond to GET so you can check from a browser that the endpoint is live.
-function doGet() {
+// GET: read feedback rows back as JSON, with optional filters.
+//
+// Why: lets future Claude sessions read the live Sheet without ever downloading
+// it. This is the read-side of the same endpoint that doPost writes to.
+//
+// Query params (all optional):
+//   project_id     filter by project (e.g. "cend")
+//   piece_id       filter by piece   (e.g. "manifesto" / "commercial")
+//   version        filter by version (e.g. "1")
+//   reviewer_name  filter by exact reviewer name (case-insensitive)
+//   since          ISO date or "YYYY-MM-DD"; only rows with timestamp >= since
+//   until          ISO date or "YYYY-MM-DD"; only rows with timestamp <  until
+//   limit          cap on rows returned (default unlimited)
+//   ping=1         health check; returns {status:"ok"} without touching the sheet
+//
+// Returns:
+//   { status: "ok", count: N, rows: [ {col: val, ...}, ... ] }
+//
+// Auth: web app must be deployed with "Anyone" access (same as doPost).
+// The Sheet itself stays private — the script runs as the deploying user.
+function doGet(e) {
+  try {
+    const params = (e && e.parameter) || {};
+
+    if (params.ping === '1' || params.ping === 'true') {
+      return _json({ status: 'ok', message: 'SideOutSticks Reviews endpoint is live.' });
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('feedback')
+                || SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+    const lastRow = sheet.getLastRow();
+    const lastCol = sheet.getLastColumn();
+    if (lastRow < 2) {
+      return _json({ status: 'ok', count: 0, rows: [] });
+    }
+
+    const values = sheet.getRange(1, 1, lastRow, lastCol).getValues();
+    const headers = values[0].map(String);
+
+    const sinceDate = params.since ? new Date(params.since) : null;
+    const untilDate = params.until ? new Date(params.until) : null;
+    const limit = params.limit ? parseInt(params.limit, 10) : null;
+
+    const rows = [];
+    for (let i = 1; i < values.length; i++) {
+      const row = values[i];
+      const obj = {};
+      for (let c = 0; c < headers.length; c++) {
+        let v = row[c];
+        if (v instanceof Date) v = v.toISOString();
+        obj[headers[c]] = v;
+      }
+      if (params.project_id    && String(obj.project_id)    !== params.project_id)    continue;
+      if (params.piece_id      && String(obj.piece_id)      !== params.piece_id)      continue;
+      if (params.version       && String(obj.version)       !== String(params.version)) continue;
+      if (params.reviewer_name &&
+          String(obj.reviewer_name).toLowerCase() !== params.reviewer_name.toLowerCase()) continue;
+      if (sinceDate && new Date(row[0]) < sinceDate) continue;
+      if (untilDate && new Date(row[0]) >= untilDate) continue;
+      rows.push(obj);
+      if (limit && rows.length >= limit) break;
+    }
+
+    return _json({ status: 'ok', count: rows.length, rows: rows });
+  } catch (err) {
+    return _json({ status: 'error', message: err.message });
+  }
+}
+
+function _json(obj) {
   return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok', message: 'SideOutSticks Reviews endpoint is live.' }))
+    .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }

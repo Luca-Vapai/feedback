@@ -92,6 +92,7 @@ const FormUI = {
             <option value="Video">Video</option>
             <option value="Editing">Editing</option>
             <option value="Graphics">Graphics</option>
+            <option value="Subtitles">Subtitles</option>
           </select>
         </div>
         <div class="form-field">

@@ -10,3 +10,14 @@ __pycache__/
 # OAuth credentials (also gitignored in scripts/.gitignore as safety net)
 scripts/credentials/client_secret.json
 scripts/credentials/token.json
+
+# Local-only config (secrets + absolute paths). The public config.json is
+# committed because the frontend reads it from GitHub Pages; anything secret
+# goes in config.local.json which stays on the local machine.
+config.local.json
+
+# Local registry pointing the open_premiere wrapper to absolute .prproj paths
+scripts/premiere_projects.json
+
+# Detached batch run logs (large, transient — kept locally for debugging only)
+scripts/batch_runs/
