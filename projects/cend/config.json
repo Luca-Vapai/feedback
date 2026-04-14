@@ -28,9 +28,16 @@
         {
           "version": 1,
           "export_date": "2026-04-13 12:55",
-          "youtube_id": "hzoghFgxlo0",
+          "youtube_id": null,
           "duration_seconds": 87.96,
           "transcript_file": "transcripts/manifesto-v1.json"
+        },
+        {
+          "version": 2,
+          "export_date": "2026-04-14 14:17",
+          "youtube_id": "qPoHKDt5W-U",
+          "duration_seconds": 84.64,
+          "transcript_file": "transcripts/manifesto-v2.json"
         }
       ]
     },
@@ -49,9 +56,16 @@
         {
           "version": 1,
           "export_date": "2026-04-13 12:46",
-          "youtube_id": "6fRxfRzOU1Q",
+          "youtube_id": null,
           "duration_seconds": 87.04,
           "transcript_file": "transcripts/commercial-v1.json"
+        },
+        {
+          "version": 2,
+          "export_date": "2026-04-14 14:19",
+          "youtube_id": "Wjb67ubLoQY",
+          "duration_seconds": 84.48,
+          "transcript_file": "transcripts/commercial-v2.json"
         }
       ]
     }

@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """
 batch_audio.py — Execute the `audio:` section of an action-items spec file
-against the ElevenLabs API + ffmpeg.
+against the ElevenLabs API.
 
 What it does per audio item:
-  1. Generate a new TTS segment via ElevenLabs with the project's cloned voice.
-  2. Optionally splice it into an existing VO master, replacing a time range
-     in the original with the new segment (ffmpeg concat).
-  3. Optionally run silence detection on the final file to catch anomalies.
+  1. Generate a new TTS excerpt via ElevenLabs with the project's cloned voice.
+  2. Run silence detection on the output to catch anomalies.
+  3. If the item declares `placement:`, record the placement intent in state
+     (target Premiere sequence + start time). THE SCRIPT DOES NOT SPLICE INTO
+     THE ORIGINAL VO — that would bake the correction into a monolithic master
+     and destroy the ability to A/B or revert individual excerpts.
+
+The excerpt file is the atomic unit. It is imported into Premiere as a clip,
+placed on a new audio track (A3/A4) at the declared start_time. The original
+v1 VO stays on A1 untouched, and the mix decides which to play.
 
 Same design principles as batch_video.py:
   - Sequential
@@ -37,11 +43,12 @@ Spec format:
         style: 0.3                            # optional
         text: "Your supply chain is a liability."
         output: "Assets/Audio/Voz/Comercial/A1_v1_excerpt.mp3"
-        # Optional splice: replace a range in an existing VO with this new clip
-        splice:
-          target_vo: "Assets/Audio/Voz/Comercial/VO Comercial v2.mp3"
-          replace_range: [1.38, 1.80]         # seconds in target_vo to cut out
-          output: "Assets/Audio/Voz/Comercial/VO_comercial_v1.mp3"
+        # Optional placement metadata (informational — consumed by the Premiere
+        # import step, NOT by this script):
+        placement:
+          target_sequence: "Comercial"        # which Premiere sequence to place the excerpt in
+          start_time: 0.0                     # seconds into that sequence
+          original_phrase_range: [0.0, 3.0]   # docs: the v1 said this phrase here
 
 The ElevenLabs API key is read from config.local.json → elevenlabs.api_key, or
 from Referencia/API Keys.md (fallback).
@@ -54,7 +61,6 @@ Default voice settings (if not in spec):
 
 import argparse
 import json
-import shutil
 import subprocess
 import sys
 import traceback
@@ -165,11 +171,6 @@ def tts_request(api_key: str, voice_id: str, text: str,
 # ffmpeg helpers
 # ---------------------------------------------------------------------------
 
-def run_ffmpeg(args: list, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["ffmpeg", "-y", *args], check=check,
-                          capture_output=True, text=True)
-
-
 def probe_duration(path: Path) -> float:
     r = subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
@@ -199,114 +200,6 @@ def _write_audio_prompt_sidecar(output: Path, item: dict):
         sidecar.write_text(content)
     except Exception as e:
         print(f"  ⚠ sidecar write failed for {output.name}: {e}", flush=True)
-
-
-def _write_splice_prompt_sidecar(spliced_output: Path, item: dict, target_vo: Path, replace_range: list):
-    """Write `<spliced_output>.prompt.txt` describing the splice operation.
-    The spliced VO is the file that actually goes into Premiere, so it gets
-    its own sidecar separate from the raw TTS excerpt's sidecar."""
-    sidecar = spliced_output.with_suffix(spliced_output.suffix + ".prompt.txt")
-    try:
-        content = (
-            f"# {spliced_output.name}\n"
-            f"slot:          {item['id']}\n"
-            f"piece:         {item.get('piece', '')}\n"
-            f"operation:     splice\n"
-            f"target_vo:     {target_vo.name}\n"
-            f"replace_range: [{replace_range[0]}, {replace_range[1]}] (seconds)\n"
-            f"description:   {item.get('description', '')}\n"
-            f"\n--- INSERTED TEXT ---\n{item.get('text', '')}\n"
-            f"\n--- TTS SETTINGS ---\n"
-            f"voice_id:        {item.get('voice_id', '')}\n"
-            f"model:           {item.get('model', DEFAULT_MODEL)}\n"
-            f"stability:       {item.get('stability', 0.5)}\n"
-            f"similarity_boost:{item.get('similarity_boost', 0.85)}\n"
-            f"style:           {item.get('style', 0.3)}\n"
-        )
-        sidecar.write_text(content)
-    except Exception as e:
-        print(f"  ⚠ splice sidecar write failed for {spliced_output.name}: {e}", flush=True)
-
-
-def splice_vo(target_vo: Path, new_segment: Path, replace_range: list, output: Path):
-    """
-    Replace the range [start, end] (in seconds) of target_vo with new_segment.
-    Result is written to output.
-
-    Strategy: extract head [0, start), extract tail [end, duration], concat
-    head + new_segment + tail. Re-encodes to mp3 192k to keep a consistent
-    format (mp3 can't be cleanly concatenated without re-encode).
-
-    Special cases:
-      - start == 0       → no head, result = segment + tail
-      - end >= duration  → no tail, result = head + segment
-    """
-    start, end = replace_range
-    target_vo = Path(target_vo)
-    new_segment = Path(new_segment)
-    output = Path(output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-
-    total = probe_duration(target_vo)
-    if start >= total:
-        raise ValueError(f"splice start {start} is past target duration {total}")
-    if end > total:
-        end = total
-
-    has_head = start > 0.05    # tiny epsilon so 0.0 → no head, but 0.1s still counts
-    has_tail = (total - end) > 0.05
-
-    tmp = output.parent / f".splice_tmp_{output.stem}"
-    tmp.mkdir(exist_ok=True)
-    try:
-        # Always normalize the new segment so codec/sample rate match
-        normalized = tmp / "segment.mp3"
-        run_ffmpeg([
-            "-i", str(new_segment),
-            "-codec:a", "libmp3lame", "-b:a", "192k",
-            str(normalized),
-        ])
-
-        parts = []
-
-        if has_head:
-            head = tmp / "head.mp3"
-            run_ffmpeg([
-                "-i", str(target_vo),
-                "-t", f"{start}",
-                "-codec:a", "libmp3lame", "-b:a", "192k",
-                str(head),
-            ])
-            parts.append(head)
-
-        parts.append(normalized)
-
-        if has_tail:
-            tail = tmp / "tail.mp3"
-            run_ffmpeg([
-                "-i", str(target_vo),
-                "-ss", f"{end}",
-                "-codec:a", "libmp3lame", "-b:a", "192k",
-                str(tail),
-            ])
-            parts.append(tail)
-
-        # If there's only one part (edge case: replacing the whole file), just copy
-        if len(parts) == 1:
-            shutil.copy2(parts[0], output)
-            return
-
-        # Concat via demuxer
-        concat_list = tmp / "concat.txt"
-        concat_list.write_text("".join(f"file '{p}'\n" for p in parts))
-        run_ffmpeg([
-            "-f", "concat", "-safe", "0",
-            "-i", str(concat_list),
-            "-codec:a", "libmp3lame", "-b:a", "192k",
-            str(output),
-        ])
-    finally:
-        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def detect_silences(path: Path, noise_db: int = -30, min_duration: float = 1.5) -> list:
@@ -388,9 +281,9 @@ class AudioBatchRunner:
 
         if self.args.dry_run:
             self._log("(dry-run — not calling ElevenLabs)")
-            if item.get("splice"):
-                splice = item["splice"]
-                self._log(f"would splice into {splice['target_vo']} at {splice['replace_range']}")
+            if item.get("placement"):
+                p = item["placement"]
+                self._log(f"placement intent: sequence={p.get('target_sequence')!r} start={p.get('start_time')}s")
             return "dry-run"
 
         # 1) Generate TTS
@@ -428,40 +321,30 @@ class AudioBatchRunner:
         except Exception as exc:
             self._log(f"  (silence probe skipped: {exc})")
 
-        # 3) Optional splice into a target VO
-        if item.get("splice"):
-            splice = item["splice"]
-            target = self.project_root / splice["target_vo"]
-            spliced_output = self.project_root / splice["output"]
-            replace_range = splice["replace_range"]
-
-            if not target.exists():
-                self._log(f"✗ splice target not found: {target}")
-                self.state.set(item["id"], status="generated_splice_failed",
-                               error=f"splice target missing: {target}")
-                return "generated"
-
+        # 3) Record placement intent (if declared). The actual placement
+        #    happens in Premiere via the import step — this script never
+        #    splices the excerpt into an existing VO, because that bakes the
+        #    correction into a monolithic master and destroys atomic revert.
+        if item.get("placement"):
+            p = item["placement"]
             try:
-                self._log(f"splicing into {target.name} at {replace_range}")
-                splice_vo(target, output, replace_range, spliced_output)
-                _write_splice_prompt_sidecar(spliced_output, item, target, replace_range)
-                spliced_dur = probe_duration(spliced_output)
-                self._log(f"✓ spliced → {spliced_output.name} (duration: {spliced_dur:.2f}s)")
-                # Re-check for silences on the spliced result
-                splice_silences = detect_silences(spliced_output, noise_db=-30, min_duration=1.5)
-                if splice_silences:
-                    self._log(f"⚠  spliced result has silent regions: {splice_silences}")
-                self.state.set(item["id"], status="done",
-                               spliced_output=str(spliced_output),
-                               spliced_duration=spliced_dur,
-                               spliced_silences=splice_silences)
-                return "done"
-            except Exception as exc:
-                self._log(f"✗ splice failed: {exc}")
-                self.state.set(item["id"], status="generated_splice_failed",
-                               error=str(exc),
-                               traceback=traceback.format_exc(limit=2))
-                return "generated"
+                excerpt_dur = probe_duration(output)
+            except Exception:
+                excerpt_dur = None
+            placement = {
+                "target_sequence": p.get("target_sequence"),
+                "start_time": p.get("start_time"),
+                "original_phrase_range": p.get("original_phrase_range"),
+                "excerpt_duration": excerpt_dur,
+            }
+            self._log(
+                f"placement: {placement['target_sequence']!r} @ {placement['start_time']}s "
+                f"(excerpt {excerpt_dur:.2f}s vs v1 range {p.get('original_phrase_range')})"
+                if excerpt_dur else
+                f"placement: {placement['target_sequence']!r} @ {placement['start_time']}s"
+            )
+            self.state.set(item["id"], status="done", placement=placement)
+            return "done"
 
         self.state.set(item["id"], status="done")
         return "done"

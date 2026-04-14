@@ -1,0 +1,987 @@
+[
+  {
+    "word": "Tired",
+    "start": 0.0,
+    "end": 0.44
+  },
+  {
+    "word": "of",
+    "start": 0.44,
+    "end": 0.6
+  },
+  {
+    "word": "not",
+    "start": 0.6,
+    "end": 0.78
+  },
+  {
+    "word": "knowing",
+    "start": 0.78,
+    "end": 1.12
+  },
+  {
+    "word": "where",
+    "start": 1.12,
+    "end": 1.38
+  },
+  {
+    "word": "your",
+    "start": 1.38,
+    "end": 1.56
+  },
+  {
+    "word": "medicines",
+    "start": 1.56,
+    "end": 1.86
+  },
+  {
+    "word": "come",
+    "start": 1.86,
+    "end": 2.32
+  },
+  {
+    "word": "from,",
+    "start": 2.32,
+    "end": 2.6
+  },
+  {
+    "word": "who",
+    "start": 2.84,
+    "end": 2.92
+  },
+  {
+    "word": "built",
+    "start": 2.92,
+    "end": 3.16
+  },
+  {
+    "word": "your",
+    "start": 3.16,
+    "end": 3.38
+  },
+  {
+    "word": "electronics,",
+    "start": 3.38,
+    "end": 3.94
+  },
+  {
+    "word": "or",
+    "start": 4.22,
+    "end": 4.28
+  },
+  {
+    "word": "whether",
+    "start": 4.28,
+    "end": 4.52
+  },
+  {
+    "word": "the",
+    "start": 4.52,
+    "end": 4.68
+  },
+  {
+    "word": "people",
+    "start": 4.68,
+    "end": 4.98
+  },
+  {
+    "word": "behind",
+    "start": 4.98,
+    "end": 5.34
+  },
+  {
+    "word": "your",
+    "start": 5.34,
+    "end": 5.6
+  },
+  {
+    "word": "favorite",
+    "start": 5.6,
+    "end": 5.92
+  },
+  {
+    "word": "brands",
+    "start": 5.92,
+    "end": 6.26
+  },
+  {
+    "word": "are",
+    "start": 6.26,
+    "end": 6.56
+  },
+  {
+    "word": "treated",
+    "start": 6.56,
+    "end": 6.88
+  },
+  {
+    "word": "fairly.",
+    "start": 6.88,
+    "end": 7.28
+  },
+  {
+    "word": "Behind",
+    "start": 7.58,
+    "end": 7.76
+  },
+  {
+    "word": "every",
+    "start": 7.76,
+    "end": 8.08
+  },
+  {
+    "word": "product",
+    "start": 8.08,
+    "end": 8.48
+  },
+  {
+    "word": "is",
+    "start": 8.48,
+    "end": 8.8
+  },
+  {
+    "word": "a",
+    "start": 8.8,
+    "end": 8.92
+  },
+  {
+    "word": "human",
+    "start": 8.92,
+    "end": 9.18
+  },
+  {
+    "word": "story,",
+    "start": 9.18,
+    "end": 9.68
+  },
+  {
+    "word": "and",
+    "start": 9.92,
+    "end": 10.0
+  },
+  {
+    "word": "a",
+    "start": 10.0,
+    "end": 10.08
+  },
+  {
+    "word": "supply",
+    "start": 10.08,
+    "end": 10.38
+  },
+  {
+    "word": "chain",
+    "start": 10.38,
+    "end": 10.76
+  },
+  {
+    "word": "few",
+    "start": 10.76,
+    "end": 11.08
+  },
+  {
+    "word": "have",
+    "start": 11.08,
+    "end": 11.4
+  },
+  {
+    "word": "ever",
+    "start": 11.4,
+    "end": 11.68
+  },
+  {
+    "word": "verified.",
+    "start": 11.68,
+    "end": 12.14
+  },
+  {
+    "word": "A",
+    "start": 12.4,
+    "end": 12.48
+  },
+  {
+    "word": "new",
+    "start": 12.48,
+    "end": 12.64
+  },
+  {
+    "word": "standard",
+    "start": 12.64,
+    "end": 13.06
+  },
+  {
+    "word": "is",
+    "start": 13.06,
+    "end": 13.38
+  },
+  {
+    "word": "rising.",
+    "start": 13.38,
+    "end": 13.82
+  },
+  {
+    "word": "One",
+    "start": 14.06,
+    "end": 14.18
+  },
+  {
+    "word": "built",
+    "start": 14.18,
+    "end": 14.38
+  },
+  {
+    "word": "on",
+    "start": 14.38,
+    "end": 14.58
+  },
+  {
+    "word": "proof,",
+    "start": 14.58,
+    "end": 14.84
+  },
+  {
+    "word": "not",
+    "start": 15.32,
+    "end": 15.46
+  },
+  {
+    "word": "promises,",
+    "start": 15.46,
+    "end": 16.16
+  },
+  {
+    "word": "on",
+    "start": 16.52,
+    "end": 16.62
+  },
+  {
+    "word": "verification",
+    "start": 16.62,
+    "end": 16.98
+  },
+  {
+    "word": "and",
+    "start": 16.98,
+    "end": 17.58
+  },
+  {
+    "word": "transparency.",
+    "start": 17.58,
+    "end": 18.12
+  },
+  {
+    "word": "So",
+    "start": 18.62,
+    "end": 18.72
+  },
+  {
+    "word": "trust",
+    "start": 18.72,
+    "end": 18.96
+  },
+  {
+    "word": "is",
+    "start": 18.96,
+    "end": 19.18
+  },
+  {
+    "word": "earned,",
+    "start": 19.18,
+    "end": 19.5
+  },
+  {
+    "word": "not",
+    "start": 19.9,
+    "end": 19.96
+  },
+  {
+    "word": "assumed.",
+    "start": 19.96,
+    "end": 20.76
+  },
+  {
+    "word": "On",
+    "start": 20.98,
+    "end": 21.04
+  },
+  {
+    "word": "seeing",
+    "start": 21.04,
+    "end": 21.28
+  },
+  {
+    "word": "the",
+    "start": 21.28,
+    "end": 21.48
+  },
+  {
+    "word": "whole",
+    "start": 21.48,
+    "end": 21.62
+  },
+  {
+    "word": "chain,",
+    "start": 21.62,
+    "end": 22.0
+  },
+  {
+    "word": "from",
+    "start": 22.3,
+    "end": 22.38
+  },
+  {
+    "word": "origin",
+    "start": 22.38,
+    "end": 22.76
+  },
+  {
+    "word": "to",
+    "start": 22.76,
+    "end": 23.18
+  },
+  {
+    "word": "your",
+    "start": 23.18,
+    "end": 23.36
+  },
+  {
+    "word": "hands,",
+    "start": 23.36,
+    "end": 23.78
+  },
+  {
+    "word": "send,",
+    "start": 24.1,
+    "end": 24.38
+  },
+  {
+    "word": "verifies,",
+    "start": 24.64,
+    "end": 25.0
+  },
+  {
+    "word": "builds,",
+    "start": 25.52,
+    "end": 25.8
+  },
+  {
+    "word": "and",
+    "start": 26.12,
+    "end": 26.18
+  },
+  {
+    "word": "secures",
+    "start": 26.18,
+    "end": 26.64
+  },
+  {
+    "word": "global",
+    "start": 26.64,
+    "end": 27.0
+  },
+  {
+    "word": "supply",
+    "start": 27.0,
+    "end": 27.48
+  },
+  {
+    "word": "chains.",
+    "start": 27.48,
+    "end": 27.88
+  },
+  {
+    "word": "Every",
+    "start": 27.88,
+    "end": 28.3
+  },
+  {
+    "word": "supplier,",
+    "start": 28.3,
+    "end": 28.76
+  },
+  {
+    "word": "every",
+    "start": 28.94,
+    "end": 29.1
+  },
+  {
+    "word": "product,",
+    "start": 29.1,
+    "end": 29.48
+  },
+  {
+    "word": "every",
+    "start": 29.78,
+    "end": 29.96
+  },
+  {
+    "word": "step.",
+    "start": 29.96,
+    "end": 30.36
+  },
+  {
+    "word": "Not",
+    "start": 30.7,
+    "end": 30.96
+  },
+  {
+    "word": "through",
+    "start": 30.96,
+    "end": 31.2
+  },
+  {
+    "word": "desk",
+    "start": 31.2,
+    "end": 31.48
+  },
+  {
+    "word": "reviews",
+    "start": 31.48,
+    "end": 31.86
+  },
+  {
+    "word": "or",
+    "start": 31.86,
+    "end": 32.22
+  },
+  {
+    "word": "self",
+    "start": 32.22,
+    "end": 32.48
+  },
+  {
+    "word": "-reported",
+    "start": 32.48,
+    "end": 32.9
+  },
+  {
+    "word": "questionnaires,",
+    "start": 32.9,
+    "end": 33.54
+  },
+  {
+    "word": "but",
+    "start": 33.86,
+    "end": 33.94
+  },
+  {
+    "word": "through",
+    "start": 33.94,
+    "end": 34.14
+  },
+  {
+    "word": "physical",
+    "start": 34.14,
+    "end": 34.6
+  },
+  {
+    "word": "verification,",
+    "start": 34.6,
+    "end": 35.14
+  },
+  {
+    "word": "facility",
+    "start": 35.7,
+    "end": 35.98
+  },
+  {
+    "word": "audits,",
+    "start": 35.98,
+    "end": 36.64
+  },
+  {
+    "word": "and",
+    "start": 36.78,
+    "end": 36.88
+  },
+  {
+    "word": "operational",
+    "start": 36.88,
+    "end": 37.4
+  },
+  {
+    "word": "due",
+    "start": 37.4,
+    "end": 37.62
+  },
+  {
+    "word": "diligence.",
+    "start": 37.62,
+    "end": 38.02
+  },
+  {
+    "word": "So",
+    "start": 38.52,
+    "end": 38.64
+  },
+  {
+    "word": "you",
+    "start": 38.64,
+    "end": 38.76
+  },
+  {
+    "word": "know",
+    "start": 38.76,
+    "end": 38.96
+  },
+  {
+    "word": "your",
+    "start": 38.96,
+    "end": 39.16
+  },
+  {
+    "word": "suppliers",
+    "start": 39.16,
+    "end": 39.62
+  },
+  {
+    "word": "are",
+    "start": 39.62,
+    "end": 39.92
+  },
+  {
+    "word": "legitimate,",
+    "start": 39.92,
+    "end": 40.4
+  },
+  {
+    "word": "compliant,",
+    "start": 40.88,
+    "end": 41.28
+  },
+  {
+    "word": "and",
+    "start": 41.72,
+    "end": 42.14
+  },
+  {
+    "word": "built",
+    "start": 42.14,
+    "end": 42.56
+  },
+  {
+    "word": "to",
+    "start": 42.56,
+    "end": 42.94
+  },
+  {
+    "word": "last.",
+    "start": 42.94,
+    "end": 43.24
+  },
+  {
+    "word": "Send,",
+    "start": 44.12,
+    "end": 44.56
+  },
+  {
+    "word": "certified,",
+    "start": 45.02,
+    "end": 45.54
+  },
+  {
+    "word": "proven,",
+    "start": 46.08,
+    "end": 46.36
+  },
+  {
+    "word": "traceable,",
+    "start": 46.78,
+    "end": 47.24
+  },
+  {
+    "word": "verified.",
+    "start": 47.68,
+    "end": 48.1
+  },
+  {
+    "word": "We're",
+    "start": 48.82,
+    "end": 49.04
+  },
+  {
+    "word": "building",
+    "start": 49.04,
+    "end": 49.34
+  },
+  {
+    "word": "a",
+    "start": 49.34,
+    "end": 49.48
+  },
+  {
+    "word": "network",
+    "start": 49.48,
+    "end": 49.84
+  },
+  {
+    "word": "of",
+    "start": 49.84,
+    "end": 50.04
+  },
+  {
+    "word": "companies",
+    "start": 50.04,
+    "end": 50.5
+  },
+  {
+    "word": "who",
+    "start": 50.5,
+    "end": 50.76
+  },
+  {
+    "word": "do",
+    "start": 50.76,
+    "end": 50.88
+  },
+  {
+    "word": "business",
+    "start": 50.88,
+    "end": 51.22
+  },
+  {
+    "word": "the",
+    "start": 51.22,
+    "end": 51.48
+  },
+  {
+    "word": "right",
+    "start": 51.48,
+    "end": 51.68
+  },
+  {
+    "word": "way,",
+    "start": 51.68,
+    "end": 52.06
+  },
+  {
+    "word": "who",
+    "start": 52.48,
+    "end": 52.6
+  },
+  {
+    "word": "earn",
+    "start": 52.6,
+    "end": 52.86
+  },
+  {
+    "word": "trust",
+    "start": 52.86,
+    "end": 53.22
+  },
+  {
+    "word": "instead",
+    "start": 53.22,
+    "end": 53.8
+  },
+  {
+    "word": "of",
+    "start": 53.8,
+    "end": 53.96
+  },
+  {
+    "word": "claiming",
+    "start": 53.96,
+    "end": 54.34
+  },
+  {
+    "word": "it,",
+    "start": 54.34,
+    "end": 54.72
+  },
+  {
+    "word": "who",
+    "start": 55.04,
+    "end": 55.12
+  },
+  {
+    "word": "prove",
+    "start": 55.12,
+    "end": 55.38
+  },
+  {
+    "word": "integrity",
+    "start": 55.38,
+    "end": 56.02
+  },
+  {
+    "word": "instead",
+    "start": 56.02,
+    "end": 56.58
+  },
+  {
+    "word": "of",
+    "start": 56.58,
+    "end": 56.78
+  },
+  {
+    "word": "promising",
+    "start": 56.78,
+    "end": 57.14
+  },
+  {
+    "word": "it.",
+    "start": 57.14,
+    "end": 57.54
+  },
+  {
+    "word": "A",
+    "start": 58.28,
+    "end": 58.68
+  },
+  {
+    "word": "verified",
+    "start": 58.68,
+    "end": 59.12
+  },
+  {
+    "word": "ecosystem,",
+    "start": 59.12,
+    "end": 60.36
+  },
+  {
+    "word": "buyers,",
+    "start": 60.78,
+    "end": 61.44
+  },
+  {
+    "word": "suppliers,",
+    "start": 62.12,
+    "end": 62.56
+  },
+  {
+    "word": "and",
+    "start": 62.88,
+    "end": 63.22
+  },
+  {
+    "word": "partners",
+    "start": 63.22,
+    "end": 63.72
+  },
+  {
+    "word": "aligned",
+    "start": 63.72,
+    "end": 64.54
+  },
+  {
+    "word": "by",
+    "start": 64.54,
+    "end": 65.08
+  },
+  {
+    "word": "proof.",
+    "start": 65.08,
+    "end": 65.5
+  },
+  {
+    "word": "Imagine",
+    "start": 65.94,
+    "end": 66.34
+  },
+  {
+    "word": "scanning",
+    "start": 66.34,
+    "end": 66.76
+  },
+  {
+    "word": "a",
+    "start": 66.76,
+    "end": 66.94
+  },
+  {
+    "word": "product",
+    "start": 66.94,
+    "end": 67.26
+  },
+  {
+    "word": "and",
+    "start": 67.26,
+    "end": 67.72
+  },
+  {
+    "word": "seeing",
+    "start": 67.72,
+    "end": 68.02
+  },
+  {
+    "word": "its",
+    "start": 68.02,
+    "end": 68.26
+  },
+  {
+    "word": "entire",
+    "start": 68.26,
+    "end": 68.66
+  },
+  {
+    "word": "journey.",
+    "start": 68.66,
+    "end": 69.12
+  },
+  {
+    "word": "Every",
+    "start": 69.44,
+    "end": 69.66
+  },
+  {
+    "word": "hand",
+    "start": 69.66,
+    "end": 69.96
+  },
+  {
+    "word": "it",
+    "start": 69.96,
+    "end": 70.14
+  },
+  {
+    "word": "passed",
+    "start": 70.14,
+    "end": 70.4
+  },
+  {
+    "word": "through,",
+    "start": 70.4,
+    "end": 70.76
+  },
+  {
+    "word": "every",
+    "start": 71.0,
+    "end": 71.26
+  },
+  {
+    "word": "checkpoint",
+    "start": 71.26,
+    "end": 71.6
+  },
+  {
+    "word": "verified.",
+    "start": 71.6,
+    "end": 72.3
+  },
+  {
+    "word": "A",
+    "start": 72.58,
+    "end": 72.64
+  },
+  {
+    "word": "world",
+    "start": 72.64,
+    "end": 72.98
+  },
+  {
+    "word": "where",
+    "start": 72.98,
+    "end": 73.2
+  },
+  {
+    "word": "legitimacy",
+    "start": 73.2,
+    "end": 73.66
+  },
+  {
+    "word": "is",
+    "start": 73.66,
+    "end": 74.1
+  },
+  {
+    "word": "the",
+    "start": 74.1,
+    "end": 74.22
+  },
+  {
+    "word": "standard,",
+    "start": 74.22,
+    "end": 74.68
+  },
+  {
+    "word": "not",
+    "start": 74.8,
+    "end": 75.0
+  },
+  {
+    "word": "the",
+    "start": 75.0,
+    "end": 75.18
+  },
+  {
+    "word": "exception.",
+    "start": 75.18,
+    "end": 75.64
+  },
+  {
+    "word": "This",
+    "start": 76.22,
+    "end": 76.34
+  },
+  {
+    "word": "is",
+    "start": 76.34,
+    "end": 76.48
+  },
+  {
+    "word": "more",
+    "start": 76.48,
+    "end": 76.84
+  },
+  {
+    "word": "than",
+    "start": 76.84,
+    "end": 77.1
+  },
+  {
+    "word": "compliance,",
+    "start": 77.1,
+    "end": 77.66
+  },
+  {
+    "word": "more",
+    "start": 78.12,
+    "end": 78.34
+  },
+  {
+    "word": "than",
+    "start": 78.34,
+    "end": 78.56
+  },
+  {
+    "word": "certification.",
+    "start": 78.56,
+    "end": 79.34
+  },
+  {
+    "word": "This",
+    "start": 79.9,
+    "end": 80.0
+  },
+  {
+    "word": "is",
+    "start": 80.0,
+    "end": 80.14
+  },
+  {
+    "word": "operational",
+    "start": 80.14,
+    "end": 80.82
+  },
+  {
+    "word": "trust.",
+    "start": 80.82,
+    "end": 81.36
+  },
+  {
+    "word": "This",
+    "start": 82.26,
+    "end": 83.02
+  },
+  {
+    "word": "is",
+    "start": 83.02,
+    "end": 83.58
+  },
+  {
+    "word": "send.",
+    "start": 83.58,
+    "end": 83.94
+  }
+]
