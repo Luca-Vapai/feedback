@@ -282,3 +282,27 @@ Keys are exact matches on the bare word token; trailing punctuation (`. , ; : ! 
 3. Commit. Next round's Whisper output is clean for that term.
 
 Tracked on cend since v5 (2026-04-15) after 3 consecutive `send` → `CEND` fixes.
+
+---
+
+## Upscale pipeline (on-demand)
+
+Parallel to the feedback loop: `upscale_clips.py --project <id>` scans the project's `Assets/Video/**` for sub-resolution clips, submits each to SOUTS `SeedVR2VideoUpscale`, downloads with next-version naming per `Documentación/Nomenclatura.md`, and persists state in `projects/<id>/upscale_state.json`. Re-running skips `done` entries unless `--force`.
+
+```bash
+python3 "Feedback web/scripts/upscale_clips.py" --project cend --dry-run     # preview
+python3 "Feedback web/scripts/upscale_clips.py" --project cend               # execute
+```
+
+Shared helpers live in `video_utils.py` (used by `publish_version.py` too in the long run):
+- `probe_resolution(path) → (w, h)` via ffprobe.
+- `compute_scale_pct(clip, seq, margin)` cover-fill scale with optional safety margin.
+- `next_version_path(path)` applies the nomenclatura rule (`_v<N>` → `_v<N+1>`, else append `_v2`).
+
+The Premiere-side relink + rescale is done interactively via Claude + the Premiere MCP after the script finishes downloading: list the upscale_state.json `done` entries, call `relink_media` on each project item, then walk every sequence and apply `set_clip_properties` with the computed scale on each instance. See memories `feedback_upscale_pipeline.md` and `feedback_auto_scale_on_import.md` for behavior details.
+
+---
+
+## Auto-scale on import (behavior, not a script)
+
+Every time a video clip gets added to a Premiere timeline (ad-hoc import, batch import, relink), the scale is computed with `compute_scale_pct` and applied via `set_clip_properties`. This is Claude-driven behavior enforced by memory (`feedback_auto_scale_on_import.md`), not a standalone script. The formula is cover-strategy with a configurable safety margin per project — cend uses 2.67% (so 1280×720 → 154% in 1920×1080).
