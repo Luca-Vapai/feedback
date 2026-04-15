@@ -221,3 +221,64 @@ See memory `feedback_gpu_preflight.md`.
 ### Priority
 
 Both items above matter for unattended automation (the generic `feedback-loop` CLI we're extracting this tooling into). For the cend-only pipeline they're "nice to have" — Luca can intervene manually when something stalls. In the portable system they are blocking for running a loop without supervision.
+
+---
+
+## Closing-the-montage routine (QA gate + 3 steps)
+
+When the editor signals that manual editing is done ("ya acomodé todo", "listo el montaje"), execute this sequence every time:
+
+**Step 0 — QA gate visual (MANDATORY, blocking)**
+
+Before touching the render, validate each QA item in the current `Guión de montaje v<N>.md`:
+
+- `mcp__premiere-pro__export_frame` at each timecode into `/tmp/qa_v<N>/<piece>_<tc>.png`.
+- Read each PNG (multimodal) and evaluate the textual condition ("no haya watermark", "clip a pantalla completa", "subtítulo aparezca cuando dice X", etc.).
+- Build a PASS/FAIL table.
+- If any FAIL: **stop**. Show the user the failing frames + the condition + likely root cause. Offer three options: fix automatic, fix manual then retry, or continue anyway (tracked in bitácora).
+- Only advance to Steps 1-3 if the gate passes (or the user explicitly chose "continue anyway").
+
+Known bug: `export_frame` may return ~t=0 content right after project changes. Workaround: always `save_project` first; retry after save if the first batch looks stale.
+
+**Step 1 — Analyze sequences**
+
+`mcp__premiere-pro__list_sequence_tracks` on each piece. Map against the previous mental model and capture editor-driven changes (music added, excerpts split, SELs moved between tracks, manual trims). Update the project bitácora so the next iteration starts from the real timeline state.
+
+**Step 2 — Export + publish each piece**
+
+`export_sequence` to `Exports/<Piece>/<canonical_name>.mp4`, then `publish_version.py --project <id> --piece <piece> --file <render>`. The script handles rename, Drive (history retained), YouTube unlisted (previous version deleted, see `feedback_drive_vs_youtube_versioning` memory), Whisper transcript, and `config.json` update. Then `git commit + push` the feedback-web repo.
+
+**Step 3 — Update project timecode**
+
+Copy each `Feedback web/projects/<id>/transcripts/<piece>-v<N>.json` to `Documentación/Transcripts/<piece>_v<N>.json` in the project root. This is the canonical word-level timecode for the new version, used by Claude in the next round to map reviewer comments to exact frames. The editor may have shifted VO clips during the montage, so the transcript must come from the rendered MP4, not from any pre-edit master.
+
+---
+
+Pattern memories: `feedback_close_montage_routine.md`, `feedback_qa_gate_pre_render.md`, `feedback_brand_vocabulary.md`. Implementation in the portable CLI lives in `feedback-loop/lib/loop.py::tramo_render` + `lib/qa.py` + `lib/transcribe.py`.
+
+---
+
+## Brand vocabulary (fix Whisper mis-hearings automatically)
+
+Whisper transcribes phonetically and maps uncommon brand names to common English words (`CEND` → `send`, `Souts` → `sauce`). The fix is a per-project dict of substitutions applied right after Whisper runs, before the JSON is written.
+
+**Config:** `projects/<project_id>/brand_vocabulary.json` — a flat dict `{"wrong": "right"}`. Example for cend:
+
+```json
+{
+  "send": "CEND",
+  "Send": "CEND",
+  "sent": "CEND",
+  "Sent": "CEND"
+}
+```
+
+Keys are exact matches on the bare word token; trailing punctuation (`. , ; : ! ?`) is preserved automatically, so you only list the bare form. `publish_version.py::generate_transcript` loads it via `load_brand_vocabulary(project_id)` and applies it with `apply_brand_vocabulary(words, vocab)`. Missing file → no-op.
+
+**Discovery workflow:**
+
+1. After a feedback round, grep comments where element=Subtitles and the reported text differs from the script text.
+2. If the difference is a phonetic match (`CEND` ↔ `send`), add the entry to the dict.
+3. Commit. Next round's Whisper output is clean for that term.
+
+Tracked on cend since v5 (2026-04-15) after 3 consecutive `send` → `CEND` fixes.

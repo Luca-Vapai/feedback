@@ -231,8 +231,52 @@ def delete_youtube(service, video_id):
 
 # --- Transcript ------------------------------------------------------------------
 
-def generate_transcript(source_path, output_path):
-    """Run Whisper with word-level timestamps and save the flat word list."""
+def load_brand_vocabulary(project_id):
+    """Load optional per-project Whisper substitutions.
+
+    Looks for `Feedback web/projects/<project_id>/brand_vocabulary.json` — a
+    flat dict of `{"whisper_output": "canonical_form"}`. Used to fix brand
+    names Whisper doesn't know (e.g. `{"send": "CEND", "Send": "CEND"}`).
+
+    Returns {} if the file doesn't exist."""
+    path = REPO_ROOT / "projects" / project_id / "brand_vocabulary.json"
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text())
+    except Exception as e:
+        log(f"Warning: brand_vocabulary.json unreadable ({e}); skipping")
+        return {}
+
+
+def apply_brand_vocabulary(words, vocab):
+    """Rewrite each word's text token using the substitution dict.
+
+    Matches are on the bare token (stripped of surrounding whitespace); any
+    trailing punctuation (`. , ; :`) is preserved. Returns the number of
+    tokens actually substituted."""
+    if not vocab:
+        return 0
+    changes = 0
+    trailing_punct = set(".,;:!?")
+    for w in words:
+        tok = w["word"]
+        tail = ""
+        while tok and tok[-1] in trailing_punct:
+            tail = tok[-1] + tail
+            tok = tok[:-1]
+        if tok in vocab:
+            w["word"] = vocab[tok] + tail
+            changes += 1
+    return changes
+
+
+def generate_transcript(source_path, output_path, project_id=None):
+    """Run Whisper with word-level timestamps and save the flat word list.
+
+    If `project_id` is given, apply the project's brand_vocabulary.json (if
+    present) to the transcribed words before writing — fixes brand names and
+    other tokens Whisper consistently mis-hears."""
     try:
         import whisper
     except ImportError:
@@ -253,6 +297,12 @@ def generate_transcript(source_path, output_path):
                 'start': round(w['start'], 2),
                 'end': round(w['end'], 2),
             })
+
+    if project_id:
+        vocab = load_brand_vocabulary(project_id)
+        changes = apply_brand_vocabulary(words, vocab)
+        if changes:
+            log(f"Brand vocab: substituted {changes} token(s)")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w') as f:
@@ -362,7 +412,7 @@ def main():
     else:
         if not args.dry_run:
             log("→ Generating transcript with Whisper…")
-            word_count = generate_transcript(src_path, transcript_abs)
+            word_count = generate_transcript(src_path, transcript_abs, project_id=args.project)
             log(f"✓ Transcript: {word_count} words → {transcript_rel}")
         else:
             log(f"→ (dry-run) would generate transcript at {transcript_rel}")
