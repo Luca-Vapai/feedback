@@ -186,3 +186,38 @@ scripts/
     ├── client_secret.json       ← you create this (step 2.d)
     └── token.json               ← auto-generated on first run
 ```
+
+---
+
+## Known issues + pending robustness work
+
+### 1. Generation batches can stall silently (TODO: watchdog)
+
+Observed on cend v3 (2026-04-15): a single `batch_video.py` job sat inside the SOUTS/Comfy queue for ~40 min without progressing. The HTTP poll (`/history/<prompt_id>`) kept returning the same response, so the batch runner couldn't tell the job from one that's legitimately slow. Luca had to interrupt it manually from the Comfy UI.
+
+**Required fix** (documented; not yet implemented):
+
+- In addition to HTTP polling, open a **WebSocket connection** to Comfy (`wss://<comfy_base>/ws?clientId=<uuid>`) and subscribe to the `progress` events it emits per node execution.
+- Maintain a per-job `last_progress_at` timestamp. If **5 minutes** pass without any progress event, treat the job as stuck.
+- Call `POST /interrupt` on the server to kill the **whole workflow** for that prompt_id (not a single node).
+- Mark the item in the state file as `interrupted_stuck` with the dead prompt_id preserved for debugging, then resubmit with a fresh prompt_id.
+- Don't block the rest of the batch — the stuck item is processed independently while the others continue.
+- Cap retries per item at 2 (config); after that, mark `permanently_stuck` and skip.
+
+See memory `feedback_comfy_watchdog.md` for the full design.
+
+### 2. No GPU preflight check (TODO)
+
+A batch of 8 jobs on cend v3 took 38 min because the SOUTS GPU was already heavily loaded by other users' traffic. The runner had no way to know before submitting.
+
+**Required fix** (documented; not yet implemented):
+
+- Before calling `submit` on the first item of a batch, query a SOUTS/Comfy system stats endpoint (`/system_stats` or equivalent) to read GPU utilization, queue depth, workers alive.
+- If the GPU is >80% saturated or the queue has >N items ahead, abort with an actionable message (`"GPU saturated (92%), 35 jobs ahead — delay or pass --force"`).
+- Expose `--force` to skip the check in urgent cases, `--wait` to re-check every N minutes instead of aborting.
+
+See memory `feedback_gpu_preflight.md`.
+
+### Priority
+
+Both items above matter for unattended automation (the generic `feedback-loop` CLI we're extracting this tooling into). For the cend-only pipeline they're "nice to have" — Luca can intervene manually when something stalls. In the portable system they are blocking for running a loop without supervision.
