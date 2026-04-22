@@ -59,6 +59,13 @@
           "youtube_id": "6rELHC7_4bk",
           "duration_seconds": 84.64,
           "transcript_file": "transcripts/manifesto-v5.json"
+        },
+        {
+          "version": 6,
+          "export_date": "2026-04-22 16:14",
+          "youtube_id": "VFcs0gNIjCY",
+          "duration_seconds": 84.64,
+          "transcript_file": "transcripts/manifesto-v6.json"
         }
       ]
     },
